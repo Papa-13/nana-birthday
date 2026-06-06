@@ -1,14 +1,13 @@
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis';
+
+const redis = Redis.fromEnv();
 
 export default async function handler(req, res) {
-  // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-admin-key');
-
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  // POST — submit RSVP
   if (req.method === 'POST') {
     try {
       const { name, events, guestSummary, totalGuests } = req.body;
@@ -23,12 +22,8 @@ export default async function handler(req, res) {
           hour: '2-digit', minute: '2-digit'
         })
       };
-      // Store individual entry
-      await kv.set(id, JSON.stringify(entry));
-      // Maintain index list
-      const index = await kv.get('rsvp_index') || [];
-      index.push(id);
-      await kv.set('rsvp_index', index);
+      await redis.set(id, JSON.stringify(entry));
+      await redis.rpush('rsvp_index', id);
       return res.status(200).json({ status: 'ok' });
     } catch (err) {
       console.error(err);
@@ -36,18 +31,14 @@ export default async function handler(req, res) {
     }
   }
 
-  // GET — fetch all RSVPs (admin only)
   if (req.method === 'GET') {
-    const adminKey = req.headers['x-admin-key'];
-    if (adminKey !== process.env.ADMIN_SECRET) {
+    if (req.headers['x-admin-key'] !== process.env.ADMIN_SECRET) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
     try {
-      const index = await kv.get('rsvp_index') || [];
+      const index = await redis.lrange('rsvp_index', 0, -1);
       if (!index.length) return res.status(200).json({ rsvps: [] });
-      const entries = await Promise.all(
-        index.map(id => kv.get(id))
-      );
+      const entries = await Promise.all(index.map(id => redis.get(id)));
       const rsvps = entries
         .filter(Boolean)
         .map(e => typeof e === 'string' ? JSON.parse(e) : e);
@@ -58,16 +49,14 @@ export default async function handler(req, res) {
     }
   }
 
-  // DELETE — clear all (admin only)
   if (req.method === 'DELETE') {
-    const adminKey = req.headers['x-admin-key'];
-    if (adminKey !== process.env.ADMIN_SECRET) {
+    if (req.headers['x-admin-key'] !== process.env.ADMIN_SECRET) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
     try {
-      const index = await kv.get('rsvp_index') || [];
-      await Promise.all(index.map(id => kv.del(id)));
-      await kv.del('rsvp_index');
+      const index = await redis.lrange('rsvp_index', 0, -1);
+      if (index.length) await Promise.all(index.map(id => redis.del(id)));
+      await redis.del('rsvp_index');
       return res.status(200).json({ status: 'cleared' });
     } catch (err) {
       return res.status(500).json({ error: 'Failed to clear' });
