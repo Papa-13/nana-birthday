@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nana's Guest List 🎉</title>
+<link href="https://fonts.googleapis.com/css2?family=Boogaloo&family=Righteous&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  :root{--pink:#ff006e;--purple:#8338ec;--blue:#3a86ff;--teal:#00d4aa;--gold:#ffbe0b;}
+  body{background:#07000f;min-height:100vh;font-family:'Boogaloo',cursive;color:#fff;padding:40px 24px;}
+
+  /* LOGIN */
+  .login-wrap{max-width:400px;margin:80px auto;text-align:center;}
+  .login-emoji{font-size:60px;display:block;margin-bottom:20px;}
+  .login-title{font-family:'Orbitron',monospace;font-size:22px;font-weight:900;color:var(--gold);margin-bottom:8px;}
+  .login-sub{font-size:15px;color:rgba(255,255,255,0.5);margin-bottom:32px;}
+  .login-box{background:linear-gradient(155deg,#1d0030,#0a0018);border:1px solid rgba(255,0,110,0.2);border-radius:24px;padding:36px;}
+  .login-box label{display:block;font-family:'Orbitron',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:8px;text-align:left;}
+  .login-box input{width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:14px 16px;color:#fff;font-family:'Boogaloo',cursive;font-size:18px;outline:none;margin-bottom:20px;}
+  .login-box input:focus{border-color:rgba(255,255,255,0.4);}
+  .login-btn{width:100%;padding:15px;border-radius:14px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;color:#fff;font-family:'Orbitron',monospace;font-size:12px;letter-spacing:4px;font-weight:700;text-transform:uppercase;cursor:pointer;transition:transform .2s;}
+  .login-btn:hover{transform:scale(1.02);}
+  .login-error{font-size:14px;color:#ff6b9d;margin-top:12px;display:none;}
+
+  /* DASHBOARD */
+  .dashboard{display:none;max-width:960px;margin:0 auto;}
+  .dash-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:36px;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,0.08);}
+  .dash-title{font-family:'Orbitron',monospace;font-size:clamp(18px,4vw,28px);font-weight:900;background:linear-gradient(135deg,var(--pink),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .dash-actions{display:flex;gap:10px;flex-wrap:wrap;}
+  .action-btn{padding:10px 20px;border-radius:999px;font-family:'Orbitron',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;border:1px solid;}
+  .btn-refresh{background:rgba(58,134,255,0.15);border-color:rgba(58,134,255,0.4);color:#7db8ff;}
+  .btn-refresh:hover{background:rgba(58,134,255,0.25);}
+  .btn-clear{background:rgba(255,50,50,0.1);border-color:rgba(255,50,50,0.3);color:#ff6b6b;}
+  .btn-clear:hover{background:rgba(255,50,50,0.2);}
+
+  .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-bottom:36px;}
+  .stat-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:24px 20px;text-align:center;}
+  .stat-num{font-family:'Orbitron',monospace;font-size:40px;font-weight:900;background:linear-gradient(135deg,var(--pink),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
+  .stat-label{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-top:8px;}
+
+  .table-wrap{overflow-x:auto;border-radius:20px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);}
+  table{width:100%;border-collapse:collapse;font-size:15px;min-width:560px;}
+  thead tr{border-bottom:1px solid rgba(255,255,255,0.1);}
+  th{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.35);padding:16px 20px;text-align:left;}
+  td{padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.05);color:rgba(255,255,255,0.85);vertical-align:middle;}
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:rgba(255,255,255,0.03);}
+  .pill{display:inline-block;padding:4px 12px;border-radius:999px;font-size:12px;font-weight:600;margin:2px 2px 0 0;}
+  .pill-pink{background:rgba(255,0,110,0.2);color:#ff6b9d;}
+  .pill-blue{background:rgba(58,134,255,0.2);color:#7db8ff;}
+  .pill-teal{background:rgba(0,212,170,0.2);color:#00d4aa;}
+  .pill-gray{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.45);}
+  .name-cell{font-weight:600;font-size:16px;}
+  .time-cell{font-size:12px;color:rgba(255,255,255,0.35);font-family:'Orbitron',monospace;}
+
+  .empty-state{text-align:center;padding:60px 20px;}
+  .empty-emoji{font-size:56px;display:block;margin-bottom:16px;}
+  .empty-text{font-size:18px;color:rgba(255,255,255,0.3);}
+
+  .loading{text-align:center;padding:60px;font-family:'Orbitron',monospace;font-size:13px;letter-spacing:3px;color:rgba(255,255,255,0.3);animation:pulse 1.5s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:.3;}50%{opacity:1;}}
+
+  @media(max-width:600px){
+    body{padding:24px 16px;}
+    .login-wrap{margin:40px auto;}
+    .dash-header{flex-direction:column;align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="login-wrap">
+  <span class="login-emoji">🔐</span>
+  <h1 class="login-title">Host Dashboard</h1>
+  <p class="login-sub">Nana's 19th Birthday · Guest List</p>
+  <div class="login-box">
+    <label for="admin-pw">Admin Password</label>
+    <input type="password" id="admin-pw" placeholder="Enter password" onkeydown="if(event.key==='Enter')login()">
+    <button class="login-btn" onclick="login()">Enter ✦</button>
+    <p class="login-error" id="login-error">Wrong password. Try again.</p>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
+  <div class="dash-header">
+    <h1 class="dash-title">✦ Guest List Dashboard</h1>
+    <div class="dash-actions">
+      <button class="action-btn btn-refresh" onclick="loadRsvps()">↻ Refresh</button>
+      <button class="action-btn btn-clear" onclick="clearAll()">✕ Clear All</button>
+    </div>
+  </div>
+
+  <div class="stats-grid" id="stats-grid">
+    <div class="stat-card"><div class="stat-num" id="s-total">—</div><div class="stat-label">RSVPs</div></div>
+    <div class="stat-card"><div class="stat-num" id="s-guests">—</div><div class="stat-label">Total Guests</div></div>
+    <div class="stat-card"><div class="stat-num" id="s-main">—</div><div class="stat-label">Main Event</div></div>
+    <div class="stat-card"><div class="stat-num" id="s-party">—</div><div class="stat-label">After Party</div></div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Events</th>
+          <th>Guests</th>
+          <th>Submitted</th>
+        </tr>
+      </thead>
+      <tbody id="rsvp-tbody">
+        <tr><td colspan="5"><div class="loading">Loading...</div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+let adminKey = '';
+
+function login(){
+  const pw = document.getElementById('admin-pw').value;
+  if(!pw){ document.getElementById('login-error').style.display='block'; return; }
+  adminKey = pw;
+  loadRsvps();
+}
+
+async function loadRsvps(){
+  try {
+    const res = await fetch('/api/rsvp', {
+      headers: { 'x-admin-key': adminKey }
+    });
+    if(res.status === 401){
+      document.getElementById('login-error').style.display='block';
+      adminKey='';
+      return;
+    }
+    const data = await res.json();
+    document.getElementById('login-wrap').style.display='none';
+    document.getElementById('login-error').style.display='none';
+    document.getElementById('dashboard').style.display='block';
+    renderDashboard(data.rsvps || []);
+  } catch(e){
+    document.getElementById('login-error').textContent='Connection error. Try again.';
+    document.getElementById('login-error').style.display='block';
+  }
+}
+
+function renderDashboard(rsvps){
+  const totalGuests = rsvps.reduce((a,r)=>a+(r.totalGuests||1),0);
+  const goingMain = rsvps.filter(r=>r.events?.includes('Main Event')).length;
+  const goingParty = rsvps.filter(r=>r.events?.includes('After Party')).length;
+
+  document.getElementById('s-total').textContent = rsvps.length;
+  document.getElementById('s-guests').textContent = totalGuests;
+  document.getElementById('s-main').textContent = goingMain;
+  document.getElementById('s-party').textContent = goingParty;
+
+  const tbody = document.getElementById('rsvp-tbody');
+  if(!rsvps.length){
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><span class="empty-emoji">🎈</span><p class="empty-text">No RSVPs yet — share the link!</p></div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = rsvps.map((r,i) => `
+    <tr>
+      <td style="color:rgba(255,255,255,0.3);font-family:'Orbitron',monospace;font-size:12px;">${i+1}</td>
+      <td class="name-cell">${r.name}</td>
+      <td>${(r.events||[]).map(e=>`<span class="pill ${e==='Main Event'?'pill-pink':'pill-blue'}">${e}</span>`).join('')}</td>
+      <td><span class="pill ${r.guestSummary==='Just me'?'pill-gray':'pill-teal'}">${r.guestSummary||'—'}</span></td>
+      <td class="time-cell">${r.submitted||'—'}</td>
+    </tr>
+  `).join('');
+}
+
+async function clearAll(){
+  if(!confirm('Delete all RSVPs? This cannot be undone.')) return;
+  try {
+    await fetch('/api/rsvp', { method:'DELETE', headers:{'x-admin-key':adminKey} });
+    loadRsvps();
+  } catch(e){ alert('Error clearing RSVPs'); }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nana's 19th Birthday 🎉</title>
+<link href="https://fonts.googleapis.com/css2?family=Boogaloo&family=Righteous&family=Russo+One&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root { --pink: #ff006e; --purple: #8338ec; --blue: #3a86ff; --teal: #00d4aa; --gold: #ffbe0b; }
+  html { scroll-behavior: smooth; }
+  body { background: #07000f; min-height: 100vh; overflow-x: hidden; font-family: 'Boogaloo', cursive; color: #fff; }
+  #stars-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+  body::after { content:''; position:fixed; inset:0; background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.04) 3px,rgba(0,0,0,0.04) 4px); pointer-events:none; z-index:999; }
+
+  .marquee-bar { position:relative; z-index:10; overflow:hidden; background:linear-gradient(90deg,var(--pink),var(--purple),var(--blue),var(--pink)); background-size:300% 100%; animation:barShift 6s linear infinite; padding:10px 0; border-bottom:2px solid rgba(255,255,255,0.15); }
+  @keyframes barShift { 0%{background-position:0% 50%} 100%{background-position:300% 50%} }
+  .marquee-track { display:flex; animation:scroll 22s linear infinite; width:max-content; }
+  .marquee-track span { font-family:'Russo One',sans-serif; font-size:13px; letter-spacing:4px; text-transform:uppercase; padding:0 40px; white-space:nowrap; }
+  @keyframes scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  .hero { position:relative; z-index:2; text-align:center; padding:80px 24px 20px; }
+  .hero-eyebrow { font-family:'Orbitron',monospace; font-size:11px; letter-spacing:7px; text-transform:uppercase; color:var(--pink); margin-bottom:20px; animation:pulseGlow 2.5s ease-in-out infinite; }
+  @keyframes pulseGlow { 0%,100%{text-shadow:0 0 6px var(--pink);opacity:.8;} 50%{text-shadow:0 0 20px var(--pink),0 0 40px var(--pink);opacity:1;} }
+  .hero-name { font-family:'Orbitron',monospace; font-size:clamp(52px,15vw,120px); font-weight:900; line-height:1; background:linear-gradient(135deg,var(--pink) 0%,var(--gold) 28%,var(--purple) 55%,var(--blue) 80%,var(--teal) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; background-size:250% 250%; animation:nameShimmer 5s ease-in-out infinite; }
+  @keyframes nameShimmer { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+  .hero-strapline { font-family:'Righteous',sans-serif; font-size:clamp(16px,3.5vw,26px); letter-spacing:5px; text-transform:uppercase; color:var(--gold); margin-top:12px; }
+  .hero-sub { font-size:18px; color:rgba(255,255,255,0.6); margin-top:18px; max-width:520px; margin-inline:auto; line-height:1.6; }
+
+  .countdown-wrap { position:relative; z-index:2; text-align:center; padding:36px 24px 50px; }
+  .countdown-label { font-family:'Orbitron',monospace; font-size:11px; letter-spacing:5px; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:20px; }
+  .countdown-grid { display:inline-flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .countdown-unit { display:flex; flex-direction:column; align-items:center; min-width:72px; }
+  .countdown-box { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:18px 20px 14px; margin-bottom:8px; min-width:72px; position:relative; overflow:hidden; }
+  .countdown-box::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,0,110,0.08),rgba(131,56,236,0.08)); }
+  .countdown-num { font-family:'Orbitron',monospace; font-size:clamp(36px,8vw,60px); font-weight:900; line-height:1; background:linear-gradient(135deg,var(--pink),var(--gold)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .countdown-sep { font-family:'Orbitron',monospace; font-size:36px; font-weight:900; color:rgba(255,255,255,0.2); align-self:flex-start; padding-top:18px; line-height:1.2; }
+  .countdown-word { font-family:'Orbitron',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.35); }
+  .countdown-done { font-family:'Righteous',sans-serif; font-size:28px; color:var(--gold); animation:pulseGlow 2s ease-in-out infinite; display:none; }
+
+  .gems { position:fixed; inset:0; pointer-events:none; z-index:1; }
+  .gem { position:absolute; font-size:22px; opacity:0.2; animation:gemDrift 9s ease-in-out infinite; }
+  @keyframes gemDrift { 0%,100%{transform:translateY(0) rotate(0deg);} 50%{transform:translateY(-28px) rotate(15deg);} }
+  .star-divider { position:relative; z-index:2; text-align:center; padding:10px 0 30px; font-size:20px; letter-spacing:14px; color:var(--gold); opacity:0.6; }
+
+  .events-section { position:relative; z-index:2; max-width:960px; margin:0 auto; padding:0 24px 80px; display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:32px; }
+  .event-card { border-radius:28px; padding:40px 36px; position:relative; overflow:hidden; animation:cardFloat 5s ease-in-out infinite; cursor:default; }
+  .event-card:nth-child(2) { animation-delay:2.5s; }
+  @keyframes cardFloat { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
+  .event-card::before { content:''; position:absolute; inset:0; border-radius:28px; padding:2px; background:var(--card-border); -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none; }
+  .event-card::after { content:''; position:absolute; top:-60%; left:-60%; width:50%; height:200%; background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,0.06) 50%,transparent 60%); animation:sweep 4s ease-in-out infinite; pointer-events:none; }
+  @keyframes sweep { 0%{transform:translateX(-100%);} 100%{transform:translateX(500%);} }
+  .card-pink { background:linear-gradient(155deg,#1d0030 0%,#0a0018 100%); --card-border:linear-gradient(135deg,var(--pink),var(--purple),var(--gold)); }
+  .card-blue { background:linear-gradient(155deg,#001530 0%,#000a1e 100%); --card-border:linear-gradient(135deg,var(--blue),var(--teal),var(--purple)); }
+  .event-badge { display:inline-flex; align-items:center; font-family:'Orbitron',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; font-weight:700; padding:7px 18px; border-radius:999px; margin-bottom:24px; }
+  .badge-pink { background:linear-gradient(135deg,var(--pink),var(--purple)); }
+  .badge-blue { background:linear-gradient(135deg,var(--blue),var(--teal)); }
+  .card-emoji { font-size:56px; display:block; margin-bottom:14px; filter:drop-shadow(0 0 12px rgba(255,255,255,0.3)); }
+  .card-title { font-family:'Righteous',sans-serif; font-size:30px; line-height:1.2; color:#fff; margin-bottom:4px; }
+  .card-venue { font-family:'Orbitron',monospace; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--gold); margin-bottom:28px; }
+  .card-blue .card-venue { color:var(--teal); }
+  .info-block { display:flex; align-items:flex-start; gap:14px; margin-bottom:16px; }
+  .info-icon { font-size:22px; min-width:28px; line-height:1.4; }
+  .info-label { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:3px; }
+  .info-value { font-size:17px; color:#fff; font-weight:600; line-height:1.3; }
+  .card-note { margin-top:24px; padding:16px 20px; border-radius:14px; background:rgba(255,255,255,0.05); border-left:3px solid var(--pink); font-size:15px; color:rgba(255,255,255,0.75); line-height:1.65; font-style:italic; }
+  .card-blue .card-note { border-left-color:var(--blue); }
+  .rsvp-btn { display:block; width:100%; margin-top:28px; padding:16px; border-radius:16px; text-align:center; font-family:'Orbitron',monospace; font-size:12px; letter-spacing:4px; font-weight:700; text-transform:uppercase; color:#fff; border:none; cursor:pointer; transition:transform 0.2s,box-shadow 0.2s; position:relative; z-index:1; }
+  .btn-pink { background:linear-gradient(135deg,var(--pink),var(--purple)); box-shadow:0 4px 20px rgba(255,0,110,0.3); }
+  .btn-blue { background:linear-gradient(135deg,var(--blue),var(--teal)); box-shadow:0 4px 20px rgba(58,134,255,0.3); }
+  .rsvp-btn:hover { transform:translateY(-3px) scale(1.02); }
+  .btn-pink:hover { box-shadow:0 10px 36px rgba(255,0,110,0.5); }
+  .btn-blue:hover { box-shadow:0 10px 36px rgba(58,134,255,0.5); }
+  .rsvp-btn:active { transform:scale(0.98); }
+
+  footer { position:relative; z-index:2; text-align:center; padding:28px 24px 40px; border-top:1px solid rgba(255,255,255,0.07); }
+  footer p { font-size:13px; letter-spacing:2px; color:rgba(255,255,255,0.3); }
+  footer .heart { color:var(--pink); }
+
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:1000; align-items:center; justify-content:center; padding:24px; backdrop-filter:blur(8px); overflow-y:auto; }
+  .modal-overlay.open { display:flex; }
+  .modal { border-radius:28px; padding:44px 40px; max-width:500px; width:100%; position:relative; animation:modalPop 0.3s cubic-bezier(.34,1.56,.64,1); max-height:90vh; overflow-y:auto; }
+  .modal-pink { background:linear-gradient(155deg,#1d0030,#0a0018); border:1px solid rgba(255,0,110,0.25); }
+  .modal-blue { background:linear-gradient(155deg,#001530,#000a1e); border:1px solid rgba(58,134,255,0.25); }
+  @keyframes modalPop { from{transform:scale(0.85);opacity:0;} to{transform:scale(1);opacity:1;} }
+  .modal-close-x { position:absolute; top:20px; right:24px; background:none; border:none; color:rgba(255,255,255,0.4); font-size:24px; cursor:pointer; }
+  .modal-close-x:hover { color:#fff; }
+  .modal-emoji { font-size:48px; display:block; margin-bottom:12px; }
+  .modal-heading { font-family:'Orbitron',monospace; font-size:20px; font-weight:900; margin-bottom:6px; }
+  .modal-pink .modal-heading { color:var(--gold); }
+  .modal-blue .modal-heading { color:var(--teal); }
+  .modal-subheading { font-size:15px; color:rgba(255,255,255,0.55); margin-bottom:28px; line-height:1.5; }
+
+  .field { margin-bottom:20px; }
+  .field label { display:block; font-family:'Orbitron',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.5); margin-bottom:8px; }
+  .field input[type="text"] { width:100%; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); border-radius:12px; padding:14px 16px; color:#fff; font-family:'Boogaloo',cursive; font-size:17px; outline:none; transition:border-color .2s; }
+  .field input[type="text"]:focus { border-color:rgba(255,255,255,0.4); }
+  .field input[type="text"]::placeholder { color:rgba(255,255,255,0.25); }
+  .field-error { font-size:12px; color:#ff6b9d; margin-top:6px; display:none; }
+  .field.has-error input { border-color:rgba(255,107,157,0.5); }
+  .field.has-error .field-error { display:block; }
+
+  .check-group { display:flex; flex-direction:column; gap:10px; }
+  .check-label { display:flex; align-items:center; gap:12px; cursor:pointer; padding:12px 16px; border-radius:12px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.04); transition:border-color .2s,background .2s; font-size:16px; color:rgba(255,255,255,0.85); }
+  .check-label:hover { border-color:rgba(255,255,255,0.25); background:rgba(255,255,255,0.08); }
+  .check-label input[type="checkbox"] { display:none; }
+  .check-box { width:20px; height:20px; border-radius:6px; border:1.5px solid rgba(255,255,255,0.3); background:transparent; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all .2s; font-size:13px; }
+  .check-label input:checked ~ .check-box { background:var(--pink); border-color:var(--pink); }
+  .check-label input:checked ~ .check-box::after { content:'✓'; color:#fff; }
+  .modal-blue .check-label input:checked ~ .check-box { background:var(--blue); border-color:var(--blue); }
+
+  .radio-group { display:flex; gap:10px; flex-wrap:wrap; }
+  .radio-label { display:flex; align-items:center; gap:10px; cursor:pointer; padding:11px 18px; border-radius:999px; border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.04); font-size:15px; color:rgba(255,255,255,0.8); transition:all .2s; }
+  .radio-label:hover { border-color:rgba(255,255,255,0.3); }
+  .radio-label input[type="radio"] { display:none; }
+  .radio-label.selected-pink { background:rgba(255,0,110,0.2); border-color:var(--pink); color:#fff; }
+  .radio-label.selected-blue { background:rgba(58,134,255,0.2); border-color:var(--blue); color:#fff; }
+
+  .guest-count-wrap { display:none; margin-top:14px; padding:16px 18px; border-radius:14px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); }
+  .guest-count-wrap.visible { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  .guest-count-wrap p { font-size:15px; color:rgba(255,255,255,0.7); flex:1; min-width:140px; }
+  .guest-count-controls { display:flex; align-items:center; border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,0.15); }
+  .count-btn { background:rgba(255,255,255,0.08); border:none; color:#fff; font-size:22px; width:40px; height:44px; cursor:pointer; transition:background .2s; display:flex; align-items:center; justify-content:center; }
+  .count-btn:hover { background:rgba(255,255,255,0.16); }
+  .count-display { width:44px; text-align:center; font-family:'Orbitron',monospace; font-size:18px; font-weight:700; color:#fff; background:rgba(255,255,255,0.04); height:44px; display:flex; align-items:center; justify-content:center; border-left:1px solid rgba(255,255,255,0.1); border-right:1px solid rgba(255,255,255,0.1); }
+
+  .submit-btn { display:block; width:100%; margin-top:28px; padding:16px; border-radius:16px; text-align:center; font-family:'Orbitron',monospace; font-size:12px; letter-spacing:4px; font-weight:700; text-transform:uppercase; color:#fff; border:none; cursor:pointer; transition:transform .2s,box-shadow .2s; }
+  .submit-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none !important; }
+  .submit-pink { background:linear-gradient(135deg,var(--pink),var(--purple)); box-shadow:0 4px 20px rgba(255,0,110,0.3); }
+  .submit-blue { background:linear-gradient(135deg,var(--blue),var(--teal)); box-shadow:0 4px 20px rgba(58,134,255,0.3); }
+  .submit-btn:hover:not(:disabled) { transform:translateY(-2px) scale(1.02); }
+
+  .confirm-state { text-align:center; padding:20px 0; }
+  .confirm-state .big-emoji { font-size:72px; display:block; margin-bottom:16px; }
+  .confirm-state h3 { font-family:'Orbitron',monospace; font-size:20px; color:var(--gold); margin-bottom:10px; }
+  .confirm-state p { font-size:17px; color:rgba(255,255,255,0.7); line-height:1.6; }
+
+  @media (max-width:600px) {
+    .hero { padding:60px 16px 20px; }
+    .countdown-grid { gap:8px; }
+    .countdown-box { padding:14px 12px 10px; min-width:60px; }
+    .countdown-sep { font-size:28px; padding-top:14px; }
+    .events-section { padding:0 16px 60px; }
+    .event-card { padding:30px 24px; }
+    .modal { padding:36px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="stars-canvas"></canvas>
+<div class="gems" aria-hidden="true">
+  <div class="gem" style="top:12%;left:4%;animation-delay:0s;">✦</div>
+  <div class="gem" style="top:38%;right:3%;animation-delay:2s;">★</div>
+  <div class="gem" style="bottom:28%;left:6%;animation-delay:4s;">◆</div>
+  <div class="gem" style="top:65%;right:7%;animation-delay:1s;">✦</div>
+  <div class="gem" style="top:22%;right:18%;animation-delay:3s;">★</div>
+  <div class="gem" style="bottom:15%;right:25%;animation-delay:5s;">◆</div>
+</div>
+
+<div class="marquee-bar">
+  <div class="marquee-track" aria-hidden="true">
+    <span>★ NANA TURNS 19 ★</span><span>ALL THAT AND A BAG OF CHIPS ★</span><span>NO SLEEP TIL SOUTH LONDON ★</span><span>MINISTRY OF SOUND ★</span><span>BECAUSE SHE'S WORTH IT ★</span><span>THE 19TH IS GIVING LEGENDARY ★</span>
+    <span>★ NANA TURNS 19 ★</span><span>ALL THAT AND A BAG OF CHIPS ★</span><span>NO SLEEP TIL SOUTH LONDON ★</span><span>MINISTRY OF SOUND ★</span><span>BECAUSE SHE'S WORTH IT ★</span><span>THE 19TH IS GIVING LEGENDARY ★</span>
+  </div>
+</div>
+
+<header class="hero">
+  <p class="hero-eyebrow">[ You Are Invited To Celebrate ]</p>
+  <h1 class="hero-name">NANA'S</h1>
+  <p class="hero-strapline">19th Birthday</p>
+  <p class="hero-sub">Two events. Come dressed, come ready, come through.</p>
+</header>
+
+<div class="countdown-wrap">
+  <p class="countdown-label">Party starts in</p>
+  <div class="countdown-grid" id="countdown-grid">
+    <div class="countdown-unit"><div class="countdown-box"><div class="countdown-num" id="cd-days">00</div></div><span class="countdown-word">Days</span></div>
+    <div class="countdown-sep" aria-hidden="true">:</div>
+    <div class="countdown-unit"><div class="countdown-box"><div class="countdown-num" id="cd-hours">00</div></div><span class="countdown-word">Hours</span></div>
+    <div class="countdown-sep" aria-hidden="true">:</div>
+    <div class="countdown-unit"><div class="countdown-box"><div class="countdown-num" id="cd-mins">00</div></div><span class="countdown-word">Mins</span></div>
+    <div class="countdown-sep" aria-hidden="true">:</div>
+    <div class="countdown-unit"><div class="countdown-box"><div class="countdown-num" id="cd-secs">00</div></div><span class="countdown-word">Secs</span></div>
+  </div>
+  <p class="countdown-done" id="countdown-done">🎉 It's party time! Happy Birthday Nana! 🎉</p>
+</div>
+
+<div class="star-divider" aria-hidden="true">✦ ★ ✦ ★ ✦</div>
+
+<main class="events-section">
+  <article class="event-card card-pink">
+    <span class="event-badge badge-pink">✦ Event One</span>
+    <span class="card-emoji">🥂</span>
+    <h2 class="card-title">Main Event</h2>
+    <p class="card-venue">Birthday Get Together</p>
+    <div class="info-block"><span class="info-icon">📅</span><div><p class="info-label">Date</p><p class="info-value">Saturday, 20th June 2026</p></div></div>
+    <div class="info-block"><span class="info-icon">⏰</span><div><p class="info-label">Time</p><p class="info-value">4:00 PM – 9:00 PM</p></div></div>
+    <div class="info-block"><span class="info-icon">📍</span><div><p class="info-label">Location</p><p class="info-value"><a href="https://www.porterandsorterpub.co.uk/our-pub?scroll=7" target="_blank" style="color:#ffbe0b;text-decoration:none;border-bottom:1px solid rgba(255,190,11,0.4);">Porter and Sorter – East Croydon</a><br><span style="font-size:13px;color:rgba(255,255,255,0.5);font-weight:400;">Station Road East, Croydon, CR0 6BT</span></p></div></div>
+    <div class="info-block"><span class="info-icon">👗</span><div><p class="info-label">Dress Code</p><p class="info-value">90s / 2000s</p></div></div>
+    <div class="card-note">Come through in your best 90s/2000s fit — think baby tees, platforms, baggy jeans, and bling. Let's celebrate Nana right.</div>
+    <button class="rsvp-btn btn-pink" onclick="openModal('event1')">RSVP Now ✦</button>
+  </article>
+
+  <article class="event-card card-blue">
+    <span class="event-badge badge-blue">✦ Event Two</span>
+    <span class="card-emoji">🎵</span>
+    <h2 class="card-title">After Party</h2>
+    <p class="card-venue">Ministry of Sound – Elephant &amp; Castle</p>
+    <div class="info-block"><span class="info-icon">📅</span><div><p class="info-label">Date</p><p class="info-value">Saturday, 20th June 2026</p></div></div>
+    <div class="info-block"><span class="info-icon">⏰</span><div><p class="info-label">Time</p><p class="info-value">10:30 PM – TBD</p></div></div>
+    <div class="info-block"><span class="info-icon">📍</span><div><p class="info-label">Location</p><p class="info-value">Ministry of Sound<br><span style="font-size:13px;color:rgba(255,255,255,0.5);font-weight:400;">Elephant &amp; Castle, Southwark, London</span></p></div></div>
+    <div class="info-block"><span class="info-icon">👟</span><div><p class="info-label">Dress Code</p><p class="info-value">90s / 2000s</p></div></div>
+    <div class="card-note">The night continues at the iconic Ministry of Sound. Basslines, birthday vibes, and the kind of night that becomes a story. Guest list only.</div>
+    <button class="rsvp-btn btn-blue" onclick="openModal('event2')">Join the Guest List ✦</button>
+  </article>
+</main>
+
+<footer>
+  <p>Made with <span class="heart">♥</span> for Nana's 19th &nbsp;·&nbsp; Don't be late &nbsp;·&nbsp; Don't miss it &nbsp;·&nbsp; ✦</p>
+</footer>
+
+<!-- RSVP MODAL -->
+<div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true">
+  <div class="modal" id="modal-box">
+    <button class="modal-close-x" onclick="closeModal()">×</button>
+    <div id="modal-form-state">
+      <span class="modal-emoji" id="modal-emoji">🥂</span>
+      <h2 class="modal-heading" id="modal-heading">RSVP – Main Event</h2>
+      <p class="modal-subheading" id="modal-subheading">Saturday 20th June · Porter and Sorter, Croydon</p>
+      <div class="field" id="field-name">
+        <label for="rsvp-name">Your Full Name</label>
+        <input type="text" id="rsvp-name" placeholder="e.g. Diane Johnson" autocomplete="name">
+        <p class="field-error">Please enter your name</p>
+      </div>
+      <div class="field" id="field-events">
+        <label>Which event(s) are you coming to?</label>
+        <div class="check-group">
+          <label class="check-label"><input type="checkbox" id="cb-event1" value="Main Event"><span class="check-box"></span>🥂 Main Event — 4pm–9pm, Porter and Sorter</label>
+          <label class="check-label"><input type="checkbox" id="cb-event2" value="After Party"><span class="check-box"></span>🎵 After Party — 10:30pm, Ministry of Sound</label>
+        </div>
+        <p class="field-error">Please select at least one event</p>
+      </div>
+      <div class="field">
+        <label>Are you bringing guests?</label>
+        <div class="radio-group" id="plus-one-group">
+          <label class="radio-label" onclick="selectRadio(this,'just-me')"><input type="radio" name="plusone" value="just-me"> Just me</label>
+          <label class="radio-label" onclick="selectRadio(this,'with-guests')"><input type="radio" name="plusone" value="with-guests"> Yes, bringing guests ✦</label>
+        </div>
+      </div>
+      <div class="guest-count-wrap" id="guest-count-wrap">
+        <p>How many additional guests are you bringing?</p>
+        <div class="guest-count-controls">
+          <button class="count-btn" onclick="changeCount(-1)">−</button>
+          <div class="count-display" id="count-display">1</div>
+          <button class="count-btn" onclick="changeCount(1)">+</button>
+        </div>
+      </div>
+      <button class="submit-btn" id="submit-btn" onclick="submitRsvp()">Confirm RSVP ✦</button>
+    </div>
+    <div id="modal-confirm-state" class="confirm-state" style="display:none;">
+      <span class="big-emoji" id="confirm-emoji">🎉</span>
+      <h3 id="confirm-title">You're on the list!</h3>
+      <p id="confirm-text">See you there!</p>
+    </div>
+  </div>
+</div>
+
+<script>
+/* STARS */
+(function(){
+  const c=document.getElementById('stars-canvas'),ctx=c.getContext('2d');let stars=[];
+  function resize(){c.width=window.innerWidth;c.height=window.innerHeight;}
+  function init(){stars=[];for(let i=0;i<120;i++)stars.push({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.5+0.5,speed:Math.random()*0.008+0.004,phase:Math.random()*Math.PI*2});}
+  function draw(t){ctx.clearRect(0,0,c.width,c.height);stars.forEach(s=>{const a=0.15+0.85*(0.5+0.5*Math.sin(t*s.speed*1000+s.phase));ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,255,${a})`;ctx.fill();});requestAnimationFrame(draw);}
+  resize();init();window.addEventListener('resize',()=>{resize();init();});requestAnimationFrame(draw);
+})();
+
+/* COUNTDOWN */
+(function(){
+  const target=new Date('2026-06-20T16:00:00');
+  const pad=n=>String(n).padStart(2,'0');
+  function tick(){
+    const diff=target-new Date();
+    if(diff<=0){document.getElementById('countdown-grid').style.display='none';document.querySelector('.countdown-label').style.display='none';document.getElementById('countdown-done').style.display='block';return;}
+    const d=Math.floor(diff/86400000),h=Math.floor((diff%86400000)/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);
+    document.getElementById('cd-days').textContent=pad(d);document.getElementById('cd-hours').textContent=pad(h);document.getElementById('cd-mins').textContent=pad(m);document.getElementById('cd-secs').textContent=pad(s);
+  }
+  tick();setInterval(tick,1000);
+})();
+
+/* MODAL */
+let currentEvent='event1',guestCount=1;
+const eventConfig={
+  event1:{emoji:'🥂',heading:'RSVP – Main Event',sub:'Saturday 20th June · Porter and Sorter, Croydon',modalClass:'modal-pink',btnClass:'submit-pink',radioClass:'selected-pink',confirm:{emoji:'🥂',title:"You're on the list!",text:"Dinner secured — see you Saturday 20th June at Porter and Sorter. Come in your best 90s/2000s fit!"}},
+  event2:{emoji:'🎵',heading:'RSVP – After Party',sub:'Saturday 20th June · Ministry of Sound, London',modalClass:'modal-blue',btnClass:'submit-blue',radioClass:'selected-blue',confirm:{emoji:'🎶',title:"Guest list secured!",text:"Ministry of Sound knows your name. See you on the dance floor from 10:30pm!"}}
+};
+
+function openModal(ev){
+  currentEvent=ev;const cfg=eventConfig[ev];
+  document.getElementById('modal-box').className='modal '+cfg.modalClass;
+  document.getElementById('modal-emoji').textContent=cfg.emoji;
+  document.getElementById('modal-heading').textContent=cfg.heading;
+  document.getElementById('modal-subheading').textContent=cfg.sub;
+  document.getElementById('submit-btn').className='submit-btn '+cfg.btnClass;
+  document.getElementById('cb-event1').checked=(ev==='event1');
+  document.getElementById('cb-event2').checked=(ev==='event2');
+  document.getElementById('rsvp-name').value='';
+  document.querySelectorAll('.radio-label').forEach(l=>l.classList.remove('selected-pink','selected-blue'));
+  document.querySelectorAll('input[name="plusone"]').forEach(r=>r.checked=false);
+  document.getElementById('guest-count-wrap').classList.remove('visible');
+  guestCount=1;document.getElementById('count-display').textContent='1';
+  ['field-name','field-events'].forEach(id=>document.getElementById(id).classList.remove('has-error'));
+  document.getElementById('modal-form-state').style.display='block';
+  document.getElementById('modal-confirm-state').style.display='none';
+  document.getElementById('modal-overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('rsvp-name').focus(),100);
+}
+function closeModal(){document.getElementById('modal-overlay').classList.remove('open');}
+function selectRadio(lbl,val){
+  const cfg=eventConfig[currentEvent];
+  document.querySelectorAll('#plus-one-group .radio-label').forEach(l=>l.classList.remove('selected-pink','selected-blue'));
+  lbl.classList.add(cfg.radioClass);lbl.querySelector('input').checked=true;
+  document.getElementById('guest-count-wrap').classList.toggle('visible',val==='with-guests');
+}
+function changeCount(d){guestCount=Math.max(1,Math.min(20,guestCount+d));document.getElementById('count-display').textContent=guestCount;}
+
+async function submitRsvp(){
+  ['field-name','field-events'].forEach(id=>document.getElementById(id).classList.remove('has-error'));
+  let valid=true;
+  const name=document.getElementById('rsvp-name').value.trim();
+  if(!name){document.getElementById('field-name').classList.add('has-error');valid=false;}
+  const events=[];
+  if(document.getElementById('cb-event1').checked)events.push('Main Event');
+  if(document.getElementById('cb-event2').checked)events.push('After Party');
+  if(!events.length){document.getElementById('field-events').classList.add('has-error');valid=false;}
+  if(!valid)return;
+
+  const bringingGuests=document.querySelector('input[name="plusone"]:checked')?.value==='with-guests';
+  const totalGuests=bringingGuests?guestCount+1:1;
+  const guestSummary=bringingGuests?`${guestCount} additional guest${guestCount>1?'s':''}`:'Just me';
+
+  const btn=document.getElementById('submit-btn');
+  btn.disabled=true;btn.textContent='Sending... ✦';
+
+  try {
+    await fetch('/api/rsvp',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name,events,guestSummary,totalGuests})
+    });
+  } catch(e){ console.error(e); }
+
+  const cfg=eventConfig[currentEvent];
+  document.getElementById('confirm-emoji').textContent=cfg.confirm.emoji;
+  document.getElementById('confirm-title').textContent=cfg.confirm.title;
+  document.getElementById('confirm-text').textContent=cfg.confirm.text+(bringingGuests?` We've noted you're bringing ${guestCount} guest${guestCount>1?'s':''}!`:'');
+  document.getElementById('modal-form-state').style.display='none';
+  document.getElementById('modal-confirm-state').style.display='block';
+  btn.disabled=false;btn.textContent='Confirm RSVP ✦';
+}
+
+document.getElementById('modal-overlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+</script>
+</body>
+</html>
