@@ -62,9 +62,33 @@
   @keyframes pulse{0%,100%{opacity:.3;}50%{opacity:1;}}
 
   @media(max-width:600px){
-    body{padding:24px 16px;}
-    .login-wrap{margin:40px auto;}
-    .dash-header{flex-direction:column;align-items:flex-start;}
+    body{padding:20px 16px;}
+    .login-wrap{margin:30px auto;}
+    .login-box{padding:28px 20px;}
+    .login-title{font-size:18px;}
+    .login-sub{font-size:13px;}
+    .login-box input{font-size:16px;padding:12px 14px;}
+    .login-btn{padding:13px;font-size:10px;}
+    .dash-header{flex-direction:column;align-items:flex-start;gap:12px;margin-bottom:24px;}
+    .dash-title{font-size:18px;}
+    .dash-actions{width:100%;justify-content:flex-start;}
+    .action-btn{padding:8px 16px;font-size:9px;}
+    .stats-grid{grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:24px;}
+    .stat-card{padding:18px 14px;}
+    .stat-num{font-size:32px;}
+    .stat-label{font-size:8px;}
+    .table-wrap{border-radius:14px;}
+    table{font-size:13px;}
+    th{padding:10px 12px;font-size:8px;}
+    td{padding:10px 12px;}
+    .name-cell{font-size:14px;}
+    .pill{font-size:11px;padding:3px 8px;}
+  }
+
+  @media(max-width:380px){
+    .stats-grid{grid-template-columns:repeat(2,1fr);}
+    .stat-num{font-size:28px;}
+    body{padding:16px 12px;}
   }
 </style>
 </head>

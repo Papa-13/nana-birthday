@@ -135,14 +135,69 @@
   .confirm-state h3 { font-family:'Orbitron',monospace; font-size:20px; color:var(--gold); margin-bottom:10px; }
   .confirm-state p { font-size:17px; color:rgba(255,255,255,0.7); line-height:1.6; }
 
-  @media (max-width:600px) {
-    .hero { padding:60px 16px 20px; }
-    .countdown-grid { gap:8px; }
-    .countdown-box { padding:14px 12px 10px; min-width:60px; }
-    .countdown-sep { font-size:28px; padding-top:14px; }
-    .events-section { padding:0 16px 60px; }
-    .event-card { padding:30px 24px; }
-    .modal { padding:36px 24px; }
+  /* ── MOBILE RESPONSIVE ── */
+  @media (max-width:768px) {
+    /* Hero */
+    .hero { padding:50px 20px 16px; }
+    .hero-eyebrow { font-size:9px; letter-spacing:4px; }
+    .hero-sub { font-size:15px; padding:0 8px; }
+
+    /* Marquee */
+    .marquee-track span { font-size:11px; letter-spacing:2px; padding:0 20px; }
+
+    /* Countdown */
+    .countdown-wrap { padding:24px 16px 36px; }
+    .countdown-grid { gap:6px; }
+    .countdown-box { padding:12px 10px 8px; min-width:56px; border-radius:12px; }
+    .countdown-num { font-size:clamp(28px,9vw,44px); }
+    .countdown-sep { font-size:24px; padding-top:12px; }
+    .countdown-word { font-size:7px; letter-spacing:1px; }
+    .countdown-label { font-size:9px; letter-spacing:3px; margin-bottom:14px; }
+
+    /* Events */
+    .events-section { padding:0 16px 50px; gap:20px; grid-template-columns:1fr; }
+    .event-card { padding:28px 22px; border-radius:22px; animation:none; }
+    .card-emoji { font-size:44px; }
+    .card-title { font-size:26px; }
+    .card-venue { font-size:10px; margin-bottom:20px; }
+    .info-block { gap:10px; margin-bottom:12px; }
+    .info-icon { font-size:18px; min-width:24px; }
+    .info-label { font-size:10px; }
+    .info-value { font-size:15px; }
+    .card-note { font-size:13px; padding:12px 16px; margin-top:18px; }
+    .rsvp-btn { padding:14px; font-size:11px; letter-spacing:3px; margin-top:22px; }
+
+    /* Star divider */
+    .star-divider { letter-spacing:8px; font-size:16px; }
+
+    /* Modal */
+    .modal-overlay { padding:16px; align-items:flex-end; }
+    .modal { border-radius:24px 24px 0 0; padding:32px 22px 28px; max-height:92vh; }
+    .modal-emoji { font-size:40px; }
+    .modal-heading { font-size:17px; }
+    .modal-subheading { font-size:13px; margin-bottom:20px; }
+    .field { margin-bottom:16px; }
+    .field label { font-size:9px; letter-spacing:2px; }
+    .field input[type="text"] { padding:12px 14px; font-size:16px; }
+    .check-label { padding:10px 14px; font-size:14px; gap:10px; }
+    .radio-label { padding:9px 14px; font-size:13px; }
+    .guest-count-wrap p { font-size:13px; }
+    .submit-btn { padding:14px; font-size:11px; letter-spacing:3px; margin-top:22px; }
+    .confirm-state .big-emoji { font-size:56px; }
+    .confirm-state h3 { font-size:17px; }
+    .confirm-state p { font-size:15px; }
+
+    /* Gems — hide on mobile to reduce clutter */
+    .gems { display:none; }
+  }
+
+  @media (max-width:380px) {
+    .countdown-grid { gap:4px; }
+    .countdown-box { min-width:48px; padding:10px 8px 6px; }
+    .countdown-num { font-size:26px; }
+    .countdown-sep { font-size:20px; }
+    .event-card { padding:22px 18px; }
+    .hero-name { font-size:clamp(42px,15vw,120px); }
   }
 </style>
 </head>
