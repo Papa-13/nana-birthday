@@ -53,6 +53,9 @@
   .pill-gray{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.45);}
   .name-cell{font-weight:600;font-size:16px;}
   .time-cell{font-size:12px;color:rgba(255,255,255,0.35);font-family:'Orbitron',monospace;}
+  .del-btn{background:rgba(255,50,50,0.1);border:1px solid rgba(255,50,50,0.25);color:#ff6b6b;border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+  .del-btn:hover{background:rgba(255,50,50,0.25);border-color:rgba(255,50,50,0.5);}
+  .del-btn:active{transform:scale(0.95);}
 
   .empty-state{text-align:center;padding:60px 20px;}
   .empty-emoji{font-size:56px;display:block;margin-bottom:16px;}
@@ -133,6 +136,7 @@
           <th>Events</th>
           <th>Guests</th>
           <th>Submitted</th>
+          <th></th>
         </tr>
       </thead>
       <tbody id="rsvp-tbody">
@@ -185,19 +189,39 @@ function renderDashboard(rsvps){
 
   const tbody = document.getElementById('rsvp-tbody');
   if(!rsvps.length){
-    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><span class="empty-emoji">🎈</span><p class="empty-text">No RSVPs yet — share the link!</p></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><span class="empty-emoji">🎈</span><p class="empty-text">No RSVPs yet — share the link!</p></div></td></tr>`;
     return;
   }
 
   tbody.innerHTML = rsvps.map((r,i) => `
-    <tr>
+    <tr id="row-${r.id}">
       <td style="color:rgba(255,255,255,0.3);font-family:'Orbitron',monospace;font-size:12px;">${i+1}</td>
       <td class="name-cell">${r.name}</td>
       <td>${(r.events||[]).map(e=>`<span class="pill ${e==='Main Event'?'pill-pink':'pill-blue'}">${e}</span>`).join('')}</td>
       <td><span class="pill ${r.guestSummary==='Just me'?'pill-gray':'pill-teal'}">${r.guestSummary||'—'}</span></td>
       <td class="time-cell">${r.submitted||'—'}</td>
+      <td><button class="del-btn" onclick="deleteOne('${r.id}','${r.name}')">✕ Remove</button></td>
     </tr>
   `).join('');
+}
+
+async function deleteOne(id, name){
+  if(!confirm(`Remove ${name} from the guest list?`)) return;
+  try {
+    const res = await fetch(`/api/rsvp?id=${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+      headers: { 'x-admin-key': adminKey }
+    });
+    if(res.ok){
+      // Remove row instantly without full reload
+      const row = document.getElementById(`row-${id}`);
+      if(row){
+        row.style.transition = 'opacity 0.3s';
+        row.style.opacity = '0';
+        setTimeout(()=>{ row.remove(); loadRsvps(); }, 300);
+      }
+    }
+  } catch(e){ alert('Error removing entry'); }
 }
 
 async function clearAll(){
