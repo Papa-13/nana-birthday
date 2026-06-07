@@ -135,6 +135,17 @@
   .confirm-state h3 { font-family:'Orbitron',monospace; font-size:20px; color:var(--gold); margin-bottom:10px; }
   .confirm-state p { font-size:17px; color:rgba(255,255,255,0.7); line-height:1.6; }
 
+  /* UNIFIED RSVP SECTION */
+  .rsvp-section { position:relative; z-index:2; text-align:center; padding:20px 24px 80px; }
+  .rsvp-section-inner { max-width:560px; margin:0 auto; background:linear-gradient(155deg,rgba(255,0,110,0.08),rgba(131,56,236,0.08)); border:1px solid rgba(255,255,255,0.1); border-radius:28px; padding:48px 40px; position:relative; overflow:hidden; }
+  .rsvp-section-inner::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,0,110,0.05),rgba(58,134,255,0.05)); pointer-events:none; }
+  .rsvp-section-eyebrow { font-family:'Orbitron',monospace; font-size:10px; letter-spacing:5px; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:14px; }
+  .rsvp-section-title { font-family:'Orbitron',monospace; font-size:clamp(22px,5vw,36px); font-weight:900; background:linear-gradient(135deg,var(--pink),var(--gold),var(--purple)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:12px; line-height:1.2; }
+  .rsvp-section-sub { font-size:17px; color:rgba(255,255,255,0.55); margin-bottom:32px; line-height:1.6; }
+  .rsvp-section-btn { display:inline-block; padding:18px 48px; border-radius:999px; background:linear-gradient(135deg,var(--pink),var(--purple)); border:none; color:#fff; font-family:'Orbitron',monospace; font-size:13px; letter-spacing:4px; font-weight:700; text-transform:uppercase; cursor:pointer; transition:transform .2s,box-shadow .2s; box-shadow:0 4px 30px rgba(255,0,110,0.35); }
+  .rsvp-section-btn:hover { transform:translateY(-3px) scale(1.03); box-shadow:0 12px 40px rgba(255,0,110,0.5); }
+  .rsvp-section-btn:active { transform:scale(0.98); }
+
   /* ── MOBILE RESPONSIVE ── */
   @media (max-width:768px) {
     /* Hero */
@@ -186,6 +197,12 @@
     .confirm-state .big-emoji { font-size:56px; }
     .confirm-state h3 { font-size:17px; }
     .confirm-state p { font-size:15px; }
+
+    /* RSVP section */
+    .rsvp-section { padding:10px 16px 60px; }
+    .rsvp-section-inner { padding:36px 24px; border-radius:22px; }
+    .rsvp-section-sub { font-size:15px; margin-bottom:24px; }
+    .rsvp-section-btn { padding:15px 36px; font-size:11px; letter-spacing:3px; }
 
     /* Gems — hide on mobile to reduce clutter */
     .gems { display:none; }
@@ -254,7 +271,6 @@
     <div class="info-block"><span class="info-icon">📍</span><div><p class="info-label">Location</p><p class="info-value"><a href="https://www.porterandsorterpub.co.uk/our-pub?scroll=7" target="_blank" style="color:#ffbe0b;text-decoration:none;border-bottom:1px solid rgba(255,190,11,0.4);">Porter and Sorter – East Croydon</a><br><span style="font-size:13px;color:rgba(255,255,255,0.5);font-weight:400;">Station Road East, Croydon, CR0 6BT</span></p></div></div>
     <div class="info-block"><span class="info-icon">👗</span><div><p class="info-label">Dress Code</p><p class="info-value">90s / 2000s</p></div></div>
     <div class="card-note">Come through in your best 90s/2000s fit — think baby tees, platforms, baggy jeans, and bling. Let's celebrate Nana right.</div>
-    <button class="rsvp-btn btn-pink" onclick="openModal('event1')">RSVP Now ✦</button>
   </article>
 
   <article class="event-card card-blue">
@@ -267,9 +283,18 @@
     <div class="info-block"><span class="info-icon">📍</span><div><p class="info-label">Location</p><p class="info-value">Ministry of Sound<br><span style="font-size:13px;color:rgba(255,255,255,0.5);font-weight:400;">Elephant &amp; Castle, Southwark, London</span></p></div></div>
     <div class="info-block"><span class="info-icon">👟</span><div><p class="info-label">Dress Code</p><p class="info-value">90s / 2000s</p></div></div>
     <div class="card-note">The night continues at the iconic Ministry of Sound. Basslines, birthday vibes, and the kind of night that becomes a story. Guest list only.</div>
-    <button class="rsvp-btn btn-blue" onclick="openModal('event2')">Join the Guest List ✦</button>
   </article>
 </main>
+
+<!-- UNIFIED RSVP SECTION -->
+<section class="rsvp-section">
+  <div class="rsvp-section-inner">
+    <p class="rsvp-section-eyebrow">[ Don't Miss Out ]</p>
+    <h2 class="rsvp-section-title">RSVP for Nana's 19th</h2>
+    <p class="rsvp-section-sub">One form. Both events. Let us know you're coming. ✦</p>
+    <button class="rsvp-section-btn" onclick="openModal()">Confirm Your Spot ✦</button>
+  </div>
+</section>
 
 <footer>
   <p>Made with <span class="heart">♥</span> for Nana's 19th &nbsp;·&nbsp; Don't be late &nbsp;·&nbsp; Don't miss it &nbsp;·&nbsp; ✦</p>
@@ -277,12 +302,12 @@
 
 <!-- RSVP MODAL -->
 <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true">
-  <div class="modal" id="modal-box">
+  <div class="modal modal-pink" id="modal-box">
     <button class="modal-close-x" onclick="closeModal()">×</button>
     <div id="modal-form-state">
-      <span class="modal-emoji" id="modal-emoji">🥂</span>
-      <h2 class="modal-heading" id="modal-heading">RSVP – Main Event</h2>
-      <p class="modal-subheading" id="modal-subheading">Saturday 20th June · Porter and Sorter, Croydon</p>
+      <span class="modal-emoji">🎉</span>
+      <h2 class="modal-heading">RSVP – Nana's 19th</h2>
+      <p class="modal-subheading">Saturday 20th June · Porter and Sorter then Ministry of Sound</p>
       <div class="field" id="field-name">
         <label for="rsvp-name">Your Full Name</label>
         <input type="text" id="rsvp-name" placeholder="e.g. Diane Johnson" autocomplete="name">
@@ -311,12 +336,12 @@
           <button class="count-btn" onclick="changeCount(1)">+</button>
         </div>
       </div>
-      <button class="submit-btn" id="submit-btn" onclick="submitRsvp()">Confirm RSVP ✦</button>
+      <button class="submit-btn submit-pink" id="submit-btn" onclick="submitRsvp()">Confirm RSVP ✦</button>
     </div>
     <div id="modal-confirm-state" class="confirm-state" style="display:none;">
-      <span class="big-emoji" id="confirm-emoji">🎉</span>
-      <h3 id="confirm-title">You're on the list!</h3>
-      <p id="confirm-text">See you there!</p>
+      <span class="big-emoji">🎉</span>
+      <h3>You're on the list!</h3>
+      <p id="confirm-text">See you on the 20th — come ready to celebrate Nana!</p>
     </div>
   </div>
 </div>
@@ -345,22 +370,12 @@
 })();
 
 /* MODAL */
-let currentEvent='event1',guestCount=1;
-const eventConfig={
-  event1:{emoji:'🥂',heading:'RSVP – Main Event',sub:'Saturday 20th June · Porter and Sorter, Croydon',modalClass:'modal-pink',btnClass:'submit-pink',radioClass:'selected-pink',confirm:{emoji:'🥂',title:"You're on the list!",text:"Dinner secured — see you Saturday 20th June at Porter and Sorter. Come in your best 90s/2000s fit!"}},
-  event2:{emoji:'🎵',heading:'RSVP – After Party',sub:'Saturday 20th June · Ministry of Sound, London',modalClass:'modal-blue',btnClass:'submit-blue',radioClass:'selected-blue',confirm:{emoji:'🎶',title:"Guest list secured!",text:"Ministry of Sound knows your name. See you on the dance floor from 10:30pm!"}}
-};
+let guestCount=1;
 
-function openModal(ev){
-  currentEvent=ev;const cfg=eventConfig[ev];
-  document.getElementById('modal-box').className='modal '+cfg.modalClass;
-  document.getElementById('modal-emoji').textContent=cfg.emoji;
-  document.getElementById('modal-heading').textContent=cfg.heading;
-  document.getElementById('modal-subheading').textContent=cfg.sub;
-  document.getElementById('submit-btn').className='submit-btn '+cfg.btnClass;
-  document.getElementById('cb-event1').checked=(ev==='event1');
-  document.getElementById('cb-event2').checked=(ev==='event2');
+function openModal(){
   document.getElementById('rsvp-name').value='';
+  document.getElementById('cb-event1').checked=false;
+  document.getElementById('cb-event2').checked=false;
   document.querySelectorAll('.radio-label').forEach(l=>l.classList.remove('selected-pink','selected-blue'));
   document.querySelectorAll('input[name="plusone"]').forEach(r=>r.checked=false);
   document.getElementById('guest-count-wrap').classList.remove('visible');
@@ -373,9 +388,8 @@ function openModal(ev){
 }
 function closeModal(){document.getElementById('modal-overlay').classList.remove('open');}
 function selectRadio(lbl,val){
-  const cfg=eventConfig[currentEvent];
   document.querySelectorAll('#plus-one-group .radio-label').forEach(l=>l.classList.remove('selected-pink','selected-blue'));
-  lbl.classList.add(cfg.radioClass);lbl.querySelector('input').checked=true;
+  lbl.classList.add('selected-pink');lbl.querySelector('input').checked=true;
   document.getElementById('guest-count-wrap').classList.toggle('visible',val==='with-guests');
 }
 function changeCount(d){guestCount=Math.max(1,Math.min(20,guestCount+d));document.getElementById('count-display').textContent=guestCount;}
@@ -406,10 +420,8 @@ async function submitRsvp(){
     });
   } catch(e){ console.error(e); }
 
-  const cfg=eventConfig[currentEvent];
-  document.getElementById('confirm-emoji').textContent=cfg.confirm.emoji;
-  document.getElementById('confirm-title').textContent=cfg.confirm.title;
-  document.getElementById('confirm-text').textContent=cfg.confirm.text+(bringingGuests?` We've noted you're bringing ${guestCount} guest${guestCount>1?'s':''}!`:'');
+  const extraMsg = bringingGuests ? ` We've noted you're bringing ${guestCount} guest${guestCount>1?'s':''}!` : '';
+  document.getElementById('confirm-text').textContent = `See you on the 20th — come ready to celebrate Nana!${extraMsg}`;
   document.getElementById('modal-form-state').style.display='none';
   document.getElementById('modal-confirm-state').style.display='block';
   btn.disabled=false;btn.textContent='Confirm RSVP ✦';
